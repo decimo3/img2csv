@@ -84,5 +84,6 @@ if __name__ == '__main__':
         result = get_string_from_image(filepath)
         all_results.append(result)
     dataframe = pandas.concat(all_results, ignore_index=True)
-    dataframe.to_csv('result.csv', index=False, sep=';', encoding='1252')
-    os.startfile('result.csv')
+    filepath = os.path.join(os.path.dirname(filepaths[0]), 'result.csv')
+    dataframe.to_csv(filepath, index=False, sep=';', encoding='1252')
+    os.startfile(filepath)
