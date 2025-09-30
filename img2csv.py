@@ -23,23 +23,9 @@ dotenv.load_dotenv(os.path.join(BASE_FOLDER, 'img2csv.conf'))
 
 # Build Tesseract command arguments using tessdata directory from environment
 CMDARG = '--tessdata-dir ' + os.getenv('TESSDATA', '')
-# Slice rows and cols (y1:y2, x1:x2)
-SLICES = [
-    (  0,  90,   0, 400 ), # Data
-    ( 91, 190,   0, 400 ), # Nota
-    (  0,  90, 401, 800 ), # Inicio
-    ( 91, 190, 401, 800 ), # Projeto
-    (  0,  90, 801, 1200), # Final
-    ( 91, 190, 801, 1200), # Regional
-    (201, 280,   0, 9999), # Endereço
-    (281, 380,   0, 400 ), # Responsável
-    (381, 480,   0, 400 ), # Classe
-    (281, 380, 401, 800 ), # Acompanhamento
-    (381, 480, 401, 800 ), # Obra
-    (281, 380, 801, 1200), # Linha
-    (381, 480, 801, 1200), # Reprogramação
-    (481, 999,   0, 9999), # Descrição
-]
+
+# Get image slices from environment variable, split by comma
+SLICES = os.getenv('SLICES', '').split(',')
 
 def get_table_from_string(text: str) -> tuple[list[str], list[str]]:
     ''' Method to transform string to CSV table '''
