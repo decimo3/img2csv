@@ -53,7 +53,8 @@ def get_string_from_image(filepath: str) -> pandas.DataFrame:
     img = cv2.imread(filepath) # pylint: disable=no-member
     if img is None:
         raise Exception(f'Não foi possível abrir o arquivo {filepath}!')
-    for i, (y1, y2, x1, x2) in enumerate(SLICES):
+    for i, slice in enumerate(SLICES):
+        y1, y2, x1, x2 = (int(x) for x in slice.split(':'))
         slice_img = img[y1:y2, x1:x2]
         if DEV_ENV:
             cv2.imshow(f"Slice {i}", slice_img) # pylint: disable=no-member
