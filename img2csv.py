@@ -7,9 +7,22 @@ from tkinter.filedialog import askopenfilenames
 import cv2
 import pandas
 import pytesseract
+import dotenv
 
+# Set what environment it is
 DEV_ENV = not getattr(sys, 'frozen', False)
 
+# Set variable that define the folder that it's executed
+if not DEV_ENV:
+    BASE_FOLDER = os.path.dirname(sys.executable)
+else:
+    BASE_FOLDER = os.path.dirname(os.path.abspath(__file__))
+
+# Load configuration file
+dotenv.load_dotenv(os.path.join(BASE_FOLDER, 'img2csv.conf'))
+
+# Build Tesseract command arguments using tessdata directory from environment
+CMDARG = '--tessdata-dir ' + os.getenv('TESSDATA', '')
 # Slice rows and cols (y1:y2, x1:x2)
 SLICES = [
     (  0,  90,   0, 400 ), # Data
