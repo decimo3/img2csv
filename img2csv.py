@@ -59,7 +59,7 @@ def get_string_from_image(filepath: str) -> pandas.DataFrame:
         if DEV_ENV:
             cv2.imshow(f"Slice {i}", slice_img) # pylint: disable=no-member
         # Extract text from the image
-        text = pytesseract.image_to_string(image=slice_img, lang='por')
+        text = pytesseract.image_to_string(image=slice_img, lang='por', config=CMDARG)
         values = get_table_from_string(text)
         heads.extend(values[0])
         bodys.extend(values[1])
