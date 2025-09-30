@@ -81,7 +81,7 @@ if __name__ == '__main__':
             print(f'O arquivo {filepath} não está acessível! Pulando...')
             continue
         mimetype = mimetypes.guess_type(filepath)
-        if mimetype[0] and mimetype[0].startswith('image'):
+        if mimetype[0] and not mimetype[0].startswith('image'):
             print(f'O arquivo {filepath} não é suportado! Pulando...')
             continue
         result = get_string_from_image(filepath)
