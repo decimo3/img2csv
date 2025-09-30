@@ -65,13 +65,11 @@ def get_string_from_image(filepath: str) -> pandas.DataFrame:
     return pandas.DataFrame(data=[bodys], columns=heads)
 
 if __name__ == '__main__':
-    # Define path of installation if 'Tesseract-OCR'
-    # Default path: 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
-    #TESSPATH = 'C:\\Users\\RUAN\\scoop\\apps\\tesseract\\current\\tesseract.exe'
-    #if not os.path.exists(TESSPATH):
-    #    raise FileExistsError('Tesseract-OCR is not installed on default path!')
+    TESSPATH = os.getenv('TESSPATH')
+    if not TESSPATH or not os.path.exists(TESSPATH):
+        raise FileExistsError('Tesseract-OCR is not installed on default path!')
     # If Tesseract is not in your system PATH, specify its executable path
-    #pytesseract.pytesseract.tesseract_cmd = TESSPATH
+    pytesseract.pytesseract.tesseract_cmd = TESSPATH
     # Ask for file if file is not specified on arguments
     filepaths = sys.argv[1:] if len(sys.argv) > 1 else askopenfilenames()
     all_results = []
