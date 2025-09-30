@@ -1,5 +1,11 @@
 # IMG2CSV
 
+O programa IMG2CSV é um wrapper Tesseract-OCR para transformar capturas de tela de formulários em tabelas CSV. O programa realiza a exclusão de cabeçalhos/respostas por meio de dois pontos no final de cada tag, por exemplo:
+
+![alt text](image-0.png)
+
+Este formulário simples com uma tag `Username:` ​​e um campo para o valor, que pode ser qualquer informação. Com base nos critérios previamente estabelecidos, `Username:` ​​será o cabeçalho da tabela e o valor de entrada `some text` será o seu valor.
+
 # Instalação
 
 O programa não precisa ser instalado, apenas descompacte o arquivo na pasta que desejar.
