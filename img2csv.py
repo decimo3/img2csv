@@ -22,7 +22,7 @@ else:
 dotenv.load_dotenv(os.path.join(BASE_FOLDER, 'img2csv.conf'))
 
 # Build Tesseract command arguments using tessdata directory from environment
-CMDARG = '--tessdata-dir ' + os.getenv('TESSDATA', '')
+CMDARG = '--psm 6 --tessdata-dir ' + os.getenv('TESSDATA', '')
 
 class NotIsImageException(Exception):
     ''' Custon exception to indicate that file is not a image '''
