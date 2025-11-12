@@ -48,7 +48,7 @@ def get_table_from_string(text: str) -> tuple[list[str], list[str]]:
     print(body)
     return head, body
 
-def get_string_from_image(filepath: str) -> pandas.DataFrame:
+def get_dataframe_from_image(filepath: str) -> pandas.DataFrame:
     ''' Method to extract string from image '''
     heads: list[str] = []
     bodys: list[str] = []
@@ -57,17 +57,81 @@ def get_string_from_image(filepath: str) -> pandas.DataFrame:
         img = Image.open(filepath).convert('RGB')
     except (FileNotFoundError, UnidentifiedImageError, ValueError, TypeError) as e:
         raise NotIsImageException(f'Não foi possível abrir o arquivo {filepath}!') from e
-    
-    for i, slice in enumerate(SLICES):
-        y1, y2, x1, x2 = (int(x) for x in slice.split(':'))
-        slice_img = img.crop(x1, y1, x2, y2)
-        if DEV_ENV:
-            slice_img.imshow()
-        # Extract text from the image
-        text = pytesseract.image_to_string(image=slice_img, lang='por', config=CMDARG)
-        values = get_table_from_string(text)
-        heads.extend(values[0])
-        bodys.extend(values[1])
+
+    df: pandas.DataFrame = pytesseract.image_to_data(
+        image=img,
+        lang='por',
+        config=CMDARG,
+        output_type=pytesseract.Output.DATAFRAME)
+
+    if not isinstance(df, pandas.DataFrame):
+        raise ValueError('O resultado gerado não condiz com o solicitado!')
+
+    # Filtra textos válidos
+    df = df[(df.conf > 0) & (df.text.notnull()) & (df.text.str.strip() != '')].copy()
+    df['text'] = df['text'].str.strip()
+
+    lines_nums: list[int] = sorted(df['line_num'].unique())
+
+
+    skipt_line: int = 0
+    # Alternância: linha ímpar = cabeçalhos / linha par = dados
+    for i in range(0, len(lines_nums), 2):
+        line_head_num = lines_nums[i + skipt_line]
+        line_data_num = lines_nums[i + 1 + skipt_line] if i + 1 + skipt_line < len(lines_nums) else None
+
+        # Palavras de cabeçalho e dados
+        head_line = df[df.line_num == line_head_num].copy()
+        data_line = df[df.line_num == line_data_num].copy() if line_data_num else pandas.DataFrame()
+
+        # Ordenar por posição x
+        head_line = head_line.sort_values('left')
+        data_line = data_line.sort_values('left') if not data_line.empty else data_line
+
+        # Verifica se a linha realmente é de cabeçalhos
+        if not any(head_line['text'].str.endswith(':')):
+            # Trata como linha de dados sem cabeçalho
+            if i == 0:
+                heads = ['Título:']
+                text = ' '.join(head_line['text'].tolist()).strip()
+                bodys = [text]
+            skipt_line = 1
+            # Reassignment to variables after skipt one row
+            line_head_num = lines_nums[i + skipt_line]
+            line_data_num = lines_nums[i + 1 + skipt_line] if i + 1 + skipt_line < len(lines_nums) else None
+            head_line = df[df.line_num == line_head_num].copy()
+            data_line = df[df.line_num == line_data_num].copy() if line_data_num else pandas.DataFrame()
+            head_line = head_line.sort_values('left')
+            data_line = data_line.sort_values('left')
+
+        # Divide linha de cabeçalhos em colunas
+        current: str = ''
+        check_pos: bool = False
+        positions: list[int] = []
+        for _, word in head_line.iterrows():
+            if check_pos:
+                positions.append(word['left'] - 10)
+                check_pos = False
+            current += ' ' + word['text']
+            if word['text'].endswith(':'):
+                heads.append(current.strip())
+                check_pos = True
+                current = ''
+        if current:
+            heads.append(current.strip())
+
+        positions.append(img.width)
+
+        left_prev: int = 0
+        for pos in positions:
+            if data_line.empty:
+                bodys.append('')
+                continue
+            words = data_line[(data_line['left'] >= left_prev) & (data_line['left'] < pos)]
+            text = ' '.join(words['text'].tolist())
+            bodys.append(text.strip())
+            left_prev = pos
+
     return pandas.DataFrame(data=[bodys], columns=heads)
 
 if __name__ == '__main__':
@@ -87,7 +151,7 @@ if __name__ == '__main__':
         if mimetype[0] and not mimetype[0].startswith('image'):
             print(f'O arquivo {filepath} não é suportado! Pulando...')
             continue
-        result = get_string_from_image(filepath)
+        result = get_dataframe_from_image(filepath)
         all_results.append(result)
     dataframe = pandas.concat(all_results, ignore_index=True)
     filepath = os.path.join(os.path.dirname(filepaths[0]), 'result.csv')
