@@ -4,7 +4,7 @@ import os
 import sys
 import mimetypes
 from tkinter.filedialog import askopenfilenames
-import cv2
+from PIL import Image, UnidentifiedImageError
 import pandas
 import pytesseract
 import dotenv
@@ -26,6 +26,9 @@ CMDARG = '--tessdata-dir ' + os.getenv('TESSDATA', '')
 
 # Get image slices from environment variable, split by comma
 SLICES = os.getenv('SLICES', '').split(',')
+
+class NotIsImageException(Exception):
+    ''' Custon exception to indicate that file is not a image '''
 
 def get_table_from_string(text: str) -> tuple[list[str], list[str]]:
     ''' Method to transform string to CSV table '''
@@ -50,14 +53,16 @@ def get_string_from_image(filepath: str) -> pandas.DataFrame:
     heads: list[str] = []
     bodys: list[str] = []
     # Open an image file
-    img = cv2.imread(filepath) # pylint: disable=no-member
-    if img is None:
-        raise Exception(f'Não foi possível abrir o arquivo {filepath}!')
+    try:
+        img = Image.open(filepath).convert('RGB')
+    except (FileNotFoundError, UnidentifiedImageError, ValueError, TypeError) as e:
+        raise NotIsImageException(f'Não foi possível abrir o arquivo {filepath}!') from e
+    
     for i, slice in enumerate(SLICES):
         y1, y2, x1, x2 = (int(x) for x in slice.split(':'))
-        slice_img = img[y1:y2, x1:x2]
+        slice_img = img.crop(x1, y1, x2, y2)
         if DEV_ENV:
-            cv2.imshow(f"Slice {i}", slice_img) # pylint: disable=no-member
+            slice_img.imshow()
         # Extract text from the image
         text = pytesseract.image_to_string(image=slice_img, lang='por', config=CMDARG)
         values = get_table_from_string(text)
