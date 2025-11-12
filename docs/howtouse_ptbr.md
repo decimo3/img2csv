@@ -24,10 +24,12 @@ SLICES=0:90:0:400,91:190:0:400,...
 Altere o caminho das configurações `TESSPATH` e `TESSDATA` para o caminho da pasta de instalação, onde o programa foi descompactado, por exemplo:
 
 Exemplo 1: Se você descompactou na pasta `C:\Users\Operador\Downloads\img2csv\`:
+
 * `TESSPATH` será `C:\Users\Operador\Downloads\img2csv\tess\tesseract.exe`
 * `TESSDATA` será `C:\Users\Operador\Downloads\img2csv\tess\tessdata`
 
 Exemplo 2: Se você descompactou na pasta `C:\Users\Operador\Desktop\img2csv\`:
+
 * `TESSPATH` será `C:\Users\Operador\Desktop\img2csv\tess\tesseract.exe`
 * `TESSDATA` será `C:\Users\Operador\Desktop\img2csv\tess\tessdata`
 
