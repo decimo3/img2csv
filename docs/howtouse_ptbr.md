@@ -6,11 +6,11 @@ O programa IMG2CSV é um wrapper Tesseract-OCR para transformar capturas de tela
 
 Este formulário simples com uma tag `Username:` ​​e um campo para o valor, que pode ser qualquer informação. Com base nos critérios previamente estabelecidos, `Username:` ​​será o cabeçalho da tabela e o valor de entrada `some text` será o seu valor.
 
-# Instalação
+## Instalação
 
 O programa não precisa ser instalado, apenas descompacte o arquivo na pasta que desejar.
 
-# Configuração
+## Configuração
 
 Para configurar, abra o arquivo `img2csv.conf` com o bloco de notas, você verá algo como abaixo:
 
@@ -33,7 +33,7 @@ Exemplo 2: Se você descompactou na pasta `C:\Users\Operador\Desktop\img2csv\`:
 
 A configuração `SLICE` não deve ser alterada a não ser que você saiba o que está fazendo!
 
-# Utilização
+## Utilização
 
 Após configurado, para utilizar é só executar o aplicativo com dois cliques, ou informar uma lista de arquivos no argumento do programa.
 
@@ -49,7 +49,7 @@ Selecione todos os arquivos de uma só vez e clique em "Abrir", para o programa 
 
 Após a coleta das informações, o mesmo gerará um arquivo `result.csv` na pasta do primeiro arquivo da lista.
 
-# Solução de problemas
+## Solução de problemas
 
 O erro `Tesseract-OCR is not installed on default path!` é causado por caminho incorreto na configuração `TESSPATH`. Verifique e acerte o caminho.
 
@@ -58,7 +58,5 @@ O erro `Failed loading language 'por' Tesseract couldn't load any languages!` é
 O erro `Não foi possível abrir o arquivo (...)!` é causado por arquivo inválido. Verifique se todos os arquivos são imagens válidas e não estão corrompidos.
 
 O erro `No objects to concatenate!` é causado por falta de arquivos válidos para coletar informação. Verifique se todas as imagens são formulários no padrão.
-
-O erro `tile cannot extend outside image` é causado por imagem com resolução abaixo da especificada em SLICES, ou seja, imagem menor que o padrão.
 
 Outros erros não cobertos podem acontecer, nesses casos entre em contato comigo para esclarecimentos.
