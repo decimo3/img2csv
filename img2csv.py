@@ -24,29 +24,8 @@ dotenv.load_dotenv(os.path.join(BASE_FOLDER, 'img2csv.conf'))
 # Build Tesseract command arguments using tessdata directory from environment
 CMDARG = '--tessdata-dir ' + os.getenv('TESSDATA', '')
 
-# Get image slices from environment variable, split by comma
-SLICES = os.getenv('SLICES', '').split(',')
-
 class NotIsImageException(Exception):
     ''' Custon exception to indicate that file is not a image '''
-
-def get_table_from_string(text: str) -> tuple[list[str], list[str]]:
-    ''' Method to transform string to CSV table '''
-    head: list[str] = []
-    body: list[str] = []
-    for line in text.split('\n'):
-        if not line:
-            continue
-        if line.endswith(':'):
-            head.append(line)
-            continue
-        body.append(line)
-    if len(body) == 0:
-        body.append('')
-    print(head)
-    print()
-    print(body)
-    return head, body
 
 def get_dataframe_from_image(filepath: str) -> pandas.DataFrame:
     ''' Method to extract string from image '''
