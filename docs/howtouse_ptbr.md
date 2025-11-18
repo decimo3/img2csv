@@ -17,8 +17,6 @@ Para configurar, abra o arquivo `img2csv.conf` com o bloco de notas, você verá
 ```ini
 TESSPATH=C:\Users\operador\Desktop\img2csv\tess\tesseract.exe
 TESSDATA=C:\Users\operador\Desktop\img2csv\tess\tessdata
-# Slice rows and cols (y1,y2,x1,x2) for Data, Nota, Inicio, ...
-SLICES=0:90:0:400,91:190:0:400,...
 ```
 
 Altere o caminho das configurações `TESSPATH` e `TESSDATA` para o caminho da pasta de instalação, onde o programa foi descompactado, por exemplo:
@@ -32,8 +30,6 @@ Exemplo 2: Se você descompactou na pasta `C:\Users\Operador\Desktop\img2csv\`:
 
 * `TESSPATH` será `C:\Users\Operador\Desktop\img2csv\tess\tesseract.exe`
 * `TESSDATA` será `C:\Users\Operador\Desktop\img2csv\tess\tessdata`
-
-A configuração `SLICE` não deve ser alterada a não ser que você saiba o que está fazendo!
 
 ## Utilização
 
